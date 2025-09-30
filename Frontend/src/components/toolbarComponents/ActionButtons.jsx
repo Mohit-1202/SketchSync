@@ -1,13 +1,19 @@
 import React from 'react';
 
 const ActionButtons = ({ canvas, isDarkTheme }) => {
- 
   const shareCanvas = () => {
+    // ✅ Copy the current URL to clipboard
     navigator.clipboard.writeText(window.location.href);
+    
+    // ✅ Create and show notification (EXACTLY like OLD toolbar)
     const notification = document.createElement('div');
-    notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce';
+    notification.className = `fixed top-4 right-4 ${
+      isDarkTheme ? 'bg-green-600' : 'bg-green-500'
+    } text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce`;
     notification.textContent = '🎉 Canvas link copied to clipboard!';
     document.body.appendChild(notification);
+    
+    // ✅ Remove notification after 3 seconds (EXACTLY like OLD toolbar)
     setTimeout(() => {
       document.body.removeChild(notification);
     }, 3000);
