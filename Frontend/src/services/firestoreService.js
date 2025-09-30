@@ -11,7 +11,7 @@ export const loadCanvas = async (sceneId) => {
     const docRef = doc(db, "scenes", sceneId);
     const snap = await getDoc(docRef);
     if (!snap.exists()) {
-      console.log("loadCanvas: no document for", sceneId);
+      // console.log("loadCanvas: no document for", sceneId);
       return null;
     }
     const data = snap.data();

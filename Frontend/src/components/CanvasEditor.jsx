@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-// components/CanvasEditor.jsx
 import { useEffect, useRef, useState, useCallback } from "react";
 import { fabric } from "fabric";
 import { loadCanvas, saveCanvas } from "../services/firestoreService";
@@ -10,7 +9,7 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
   const fabricCanvas = useRef(null);
   const [objectCount, setObjectCount] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const [saveStatus, setSaveStatus] = useState("idle"); 
+  const [saveStatus, setSaveStatus] = useState("idle");
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -21,7 +20,6 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
 
   const saveCanvasData = useCallback(async () => {
     if (!fabricCanvas.current || !sceneId) return;
-
     setSaveStatus("saving");
     try {
       const canvasData = fabricCanvas.current.toJSON();
@@ -54,10 +52,13 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
   };
 
   useEffect(() => {
-    const canvasWidth = isMobile ? window.innerWidth : window.innerWidth - 320;
-    const canvasHeight = isMobile ? window.innerHeight - 80 : window.innerHeight;
+    const el = canvasRef.current;
+    if (!el) return;
 
-    const canvas = new fabric.Canvas(canvasRef.current, {
+    const canvasWidth = Math.max(200, isMobile ? window.innerWidth : window.innerWidth - 320);
+    const canvasHeight = Math.max(200, isMobile ? window.innerHeight - 80 : window.innerHeight);
+
+    const canvas = new fabric.Canvas(el, {
       backgroundColor: "#0f172a",
       width: canvasWidth,
       height: canvasHeight,
@@ -108,8 +109,8 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
 
     const handleResize = () => {
       if (!fabricCanvas.current) return;
-      const w = isMobile ? window.innerWidth : window.innerWidth - 320;
-      const h = isMobile ? window.innerHeight - 80 : window.innerHeight;
+      const w = Math.max(200, isMobile ? window.innerWidth : window.innerWidth - 320);
+      const h = Math.max(200, isMobile ? window.innerHeight - 80 : window.innerHeight);
       fabricCanvas.current.setDimensions({ width: w, height: h });
       fabricCanvas.current.renderAll();
     };
@@ -138,8 +139,8 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
       window.removeEventListener("keydown", handleKeyDown);
       try {
         canvas.dispose();
-      } catch(error) {
-        console.log(error)
+      } catch(err) {
+        console.log(err)
       }
       fabricCanvas.current = null;
     };
@@ -185,20 +186,14 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
       </div>
 
       <div
-        className={`absolute ${
-          isMobile ? "bottom-16 left-4" : "bottom-4 left-4"
-        } bg-gray-800/70 text-white px-4 py-2 rounded-lg z-20 backdrop-blur-sm`}
+        className={`absolute ${isMobile ? "bottom-16 left-4" : "bottom-4 left-4"} bg-gray-800/70 text-white px-4 py-2 rounded-lg z-20 backdrop-blur-sm`}
       >
         Objects: {objectCount}
       </div>
 
       <canvas
         ref={canvasRef}
-        className={`relative z-10 ${
-          isMobile
-            ? "w-full h-full rounded-none"
-            : "rounded-2xl shadow-2xl border-2 border-gray-600/30"
-        }`}
+        className={`relative z-10 ${isMobile ? "w-full h-full rounded-none" : "rounded-2xl shadow-2xl border-2 border-gray-600/30"}`}
       />
     </div>
   );

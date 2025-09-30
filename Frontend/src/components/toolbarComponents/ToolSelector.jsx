@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-case-declarations */
-import React, { useEffect, useRef } from 'react';
-import { fabric } from 'fabric';
+import React, { useEffect, useRef } from "react";
+import { fabric } from "fabric";
 
 const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
   const tools = [
@@ -12,12 +12,22 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
     { id: "line", icon: "📏", label: "Line" },
     { id: "text", icon: "✏️", label: "Text" },
     { id: "pen", icon: "🖊️", label: "Pen" },
-    { id: "eraser", icon: "🧽", label: "Eraser" }
+    { id: "eraser", icon: "🧽", label: "Eraser" },
   ];
 
   const isDrawingRef = useRef(false);
   const startPointRef = useRef(null);
   const currentShapeRef = useRef(null);
+
+  const safeRender = () => {
+    if (!canvas) return;
+    if (!canvas.contextContainer) return;
+    try {
+      canvas.renderAll();
+    } catch (e) {
+      console.warn("Skipped render, canvas not ready", e);
+    }
+  };
 
   useEffect(() => {
     if (!canvas) return;
@@ -30,7 +40,7 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
 
     canvas.isDrawingMode = false;
     canvas.selection = true;
-    canvas.defaultCursor = 'default';
+    canvas.defaultCursor = "default";
     canvas.skipTargetFind = false;
 
     const activeObject = canvas.getActiveObject();
@@ -38,67 +48,62 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
       activeObject.exitEditing();
     }
 
-    // Deselect all objects for drawing tools
     if (toolName !== "select") {
       canvas.discardActiveObject();
-      canvas.renderAll();
+      safeRender();
     }
 
     switch (toolName) {
       case "select":
         canvas.selection = true;
-        canvas.defaultCursor = 'default';
+        canvas.defaultCursor = "default";
         break;
       case "pen":
         canvas.isDrawingMode = true;
         canvas.freeDrawingBrush.width = 5;
         canvas.freeDrawingBrush.color = isDarkTheme ? "#ffffff" : "#000000";
-        canvas.defaultCursor = 'crosshair';
+        canvas.defaultCursor = "crosshair";
         break;
       case "eraser":
         canvas.isDrawingMode = true;
         canvas.freeDrawingBrush.width = 15;
-        // Use current canvas background color for proper erasing
-        const currentBgColor = canvas.backgroundColor || (isDarkTheme ? "#0f172a" : "#ffffff");
+        const currentBgColor =
+          canvas.backgroundColor || (isDarkTheme ? "#0f172a" : "#ffffff");
         canvas.freeDrawingBrush.color = currentBgColor;
-        canvas.defaultCursor = 'crosshair';
+        canvas.defaultCursor = "crosshair";
         break;
       case "rectangle":
       case "circle":
       case "triangle":
       case "line":
         canvas.selection = false;
-        canvas.defaultCursor = 'crosshair';
+        canvas.defaultCursor = "crosshair";
         break;
       case "text":
         canvas.selection = false;
-        canvas.defaultCursor = 'text';
+        canvas.defaultCursor = "text";
         break;
       default:
         break;
     }
 
-    canvas.renderAll();
+    safeRender();
   };
 
-  // Drag-to-create event handlers
   const handleMouseDown = (opt) => {
-    // Don't start drawing if we're clicking on an existing object (unless it's select tool)
     if (opt.target && activeTool !== "select") return;
-    
-    // Only handle shape tools
-    if (!["rectangle", "circle", "triangle", "line"].includes(activeTool)) return;
+    if (!["rectangle", "circle", "triangle", "line"].includes(activeTool))
+      return;
 
     const pointer = canvas.getPointer(opt.e);
     isDrawingRef.current = true;
     startPointRef.current = pointer;
 
-    // Create the initial shape
     const baseStyles = {
-      fill: 'transparent',
+      fill: "transparent",
       stroke: isDarkTheme ? "#ffffff" : "#000000",
       strokeWidth: 2,
-      selectable: false // Make it non-selectable while drawing
+      selectable: false,
     };
 
     switch (activeTool) {
@@ -108,7 +113,7 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
           top: pointer.y,
           width: 0,
           height: 0,
-          ...baseStyles
+          ...baseStyles,
         });
         break;
       case "circle":
@@ -116,7 +121,7 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
           left: pointer.x,
           top: pointer.y,
           radius: 0,
-          ...baseStyles
+          ...baseStyles,
         });
         break;
       case "triangle":
@@ -125,7 +130,7 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
           top: pointer.y,
           width: 0,
           height: 0,
-          ...baseStyles
+          ...baseStyles,
         });
         break;
       case "line":
@@ -134,7 +139,7 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
           {
             stroke: isDarkTheme ? "#ffffff" : "#000000",
             strokeWidth: 2,
-            selectable: false
+            selectable: false,
           }
         );
         break;
@@ -148,7 +153,8 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
   };
 
   const handleMouseMove = (opt) => {
-    if (!isDrawingRef.current || !currentShapeRef.current || !startPointRef.current) return;
+    if (!isDrawingRef.current || !currentShapeRef.current || !startPointRef.current)
+      return;
 
     const pointer = canvas.getPointer(opt.e);
     const width = pointer.x - startPointRef.current.x;
@@ -160,7 +166,7 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
           width: Math.abs(width),
           height: Math.abs(height),
           left: width < 0 ? pointer.x : startPointRef.current.x,
-          top: height < 0 ? pointer.y : startPointRef.current.y
+          top: height < 0 ? pointer.y : startPointRef.current.y,
         });
         break;
       case "circle":
@@ -168,7 +174,7 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
         currentShapeRef.current.set({
           radius: radius,
           left: startPointRef.current.x + width / 2 - radius,
-          top: startPointRef.current.y + height / 2 - radius
+          top: startPointRef.current.y + height / 2 - radius,
         });
         break;
       case "triangle":
@@ -176,96 +182,99 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
           width: Math.abs(width),
           height: Math.abs(height),
           left: width < 0 ? pointer.x : startPointRef.current.x,
-          top: height < 0 ? pointer.y : startPointRef.current.y
+          top: height < 0 ? pointer.y : startPointRef.current.y,
         });
         break;
       case "line":
         currentShapeRef.current.set({
           x2: pointer.x,
-          y2: pointer.y
+          y2: pointer.y,
         });
         break;
     }
 
-    canvas.renderAll();
+    safeRender();
   };
 
   const handleMouseUp = () => {
     if (!isDrawingRef.current || !currentShapeRef.current) return;
-    
-    const isTooSmall = 
-      (activeTool === "rectangle" && (currentShapeRef.current.width < 5 || currentShapeRef.current.height < 5)) ||
+
+    const isTooSmall =
+      (activeTool === "rectangle" &&
+        (currentShapeRef.current.width < 5 ||
+          currentShapeRef.current.height < 5)) ||
       (activeTool === "circle" && currentShapeRef.current.radius < 5) ||
-      (activeTool === "triangle" && (currentShapeRef.current.width < 5 || currentShapeRef.current.height < 5)) ||
-      (activeTool === "line" && 
-        (Math.abs(currentShapeRef.current.x2 - currentShapeRef.current.x1) < 5 && 
-         Math.abs(currentShapeRef.current.y2 - currentShapeRef.current.y1) < 5));
+      (activeTool === "triangle" &&
+        (currentShapeRef.current.width < 5 ||
+          currentShapeRef.current.height < 5)) ||
+      (activeTool === "line" &&
+        Math.abs(currentShapeRef.current.x2 - currentShapeRef.current.x1) < 5 &&
+        Math.abs(currentShapeRef.current.y2 - currentShapeRef.current.y1) < 5);
 
     if (isTooSmall) {
       canvas.remove(currentShapeRef.current);
     } else {
-      currentShapeRef.current.set({ 
+      currentShapeRef.current.set({
         selectable: true,
-        evented: true
+        evented: true,
       });
       canvas.setActiveObject(currentShapeRef.current);
     }
-    
-    canvas.renderAll();
-    
+
+    safeRender();
+
     isDrawingRef.current = false;
     startPointRef.current = null;
     currentShapeRef.current = null;
   };
 
-const handleTextCreation = (opt) => {
-  if (opt.target) return;
+  const handleTextCreation = (opt) => {
+    if (opt.target) return;
+    const pointer = canvas.getPointer(opt.e);
 
-  const pointer = canvas.getPointer(opt.e);
-  
-  const text = new fabric.IText("Type here...", { 
-    left: pointer.x, 
-    top: pointer.y, 
-    fill: isDarkTheme ? "#a0a0a0" : "#666666", 
-    fontSize: 24, 
-    fontFamily: "Arial",
-    selectable: true,
-    editable: true
-  });
+    const text = new fabric.IText("Type here...", {
+      left: pointer.x,
+      top: pointer.y,
+      fill: isDarkTheme ? "#a0a0a0" : "#666666",
+      fontSize: 24,
+      fontFamily: "Arial",
+      selectable: true,
+      editable: true,
+    });
 
-  let isPlaceholder = true;
-  
-  text.on('editing:entered', function() {
-    if (isPlaceholder) {
-      setTimeout(() => {
+    let isPlaceholder = true;
+
+    text.on("editing:entered", function () {
+      if (isPlaceholder) {
+        setTimeout(() => {
+          text.set({
+            text: "",
+            fill: isDarkTheme ? "#ffffff" : "#000000",
+          });
+          isPlaceholder = false;
+          safeRender();
+        }, 10);
+      }
+    });
+
+    text.on("editing:exited", () => {
+      if (!text.text || text.text.trim() === "") {
         text.set({
-          text: '',
-          fill: isDarkTheme ? "#ffffff" : "#000000"
+          text: "Type here...",
+          fill: isDarkTheme ? "#a0a0a0" : "#666666",
         });
-        isPlaceholder = false;
-        canvas.renderAll();
-      }, 10);
-    }
-  });
+        isPlaceholder = true;
+        safeRender();
+      }
+    });
 
-  text.on("editing:exited", () => {
-    if (!text.text || text.text.trim() === "") {
-      text.set({
-        text: 'Type here...',
-        fill: isDarkTheme ? "#a0a0a0" : "#666666"
-      });
-      isPlaceholder = true;
-      canvas.renderAll();
-    }
-  });
+    canvas.add(text);
+    canvas.setActiveObject(text);
 
-  canvas.add(text);
-  canvas.setActiveObject(text);
-  
-  setTimeout(() => {
-    text.enterEditing();
-  }, 50);
-};
+    setTimeout(() => {
+      text.enterEditing();
+    }, 50);
+  };
 
   const setupEventListeners = () => {
     if (!canvas) return;
@@ -286,26 +295,24 @@ const handleTextCreation = (opt) => {
   };
 
   const handleToolClick = (toolId) => {
-    if (!canvas) {
-      console.warn('Canvas not available');
-      return;
-    }
-
-    if ((toolId === "pen" && activeTool === "pen") || 
-        (toolId === "eraser" && activeTool === "eraser")) {
+    if (!canvas) return;
+    if (
+      (toolId === "pen" && activeTool === "pen") ||
+      (toolId === "eraser" && activeTool === "eraser")
+    ) {
       setActiveTool("select");
     } else {
       setActiveTool(toolId);
     }
   };
 
-  const cardBg = isDarkTheme ? 'bg-gray-700' : 'bg-gray-100';
-  const borderColor = isDarkTheme ? 'border-gray-700' : 'border-gray-300';
-  const textColor = isDarkTheme ? 'text-white' : 'text-gray-900';
-  const mutedText = isDarkTheme ? 'text-gray-300' : 'text-gray-600';
-  const accentBorder = isDarkTheme ? 'border-purple-500' : 'border-purple-600';
-  const accentBg = isDarkTheme ? 'bg-purple-900' : 'bg-purple-100';
-  const hoverBg = isDarkTheme ? 'hover:bg-gray-750' : 'hover:bg-gray-200';
+  const cardBg = isDarkTheme ? "bg-gray-700" : "bg-gray-100";
+  const borderColor = isDarkTheme ? "border-gray-700" : "border-gray-300";
+  const textColor = isDarkTheme ? "text-white" : "text-gray-900";
+  const mutedText = isDarkTheme ? "text-gray-300" : "text-gray-600";
+  const accentBorder = isDarkTheme ? "border-purple-500" : "border-purple-600";
+  const accentBg = isDarkTheme ? "bg-purple-900" : "bg-purple-100";
+  const hoverBg = isDarkTheme ? "hover:bg-gray-750" : "hover:bg-gray-200";
 
   return (
     <div className={`${cardBg} rounded-xl p-4 border ${borderColor}`}>
@@ -315,12 +322,12 @@ const handleTextCreation = (opt) => {
       </h3>
       <div className="grid grid-cols-4 gap-2">
         {tools.map((tool) => (
-          <button 
+          <button
             key={tool.id}
             onClick={() => handleToolClick(tool.id)}
             className={`p-2 rounded-lg transition-all duration-200 border-2 ${
-              activeTool === tool.id 
-                ? `${accentBorder} ${accentBg} ${mutedText} shadow-sm` 
+              activeTool === tool.id
+                ? `${accentBorder} ${accentBg} ${mutedText} shadow-sm`
                 : `${borderColor} ${cardBg} ${mutedText} ${hoverBg}`
             }`}
             title={tool.label}
@@ -332,20 +339,14 @@ const handleTextCreation = (opt) => {
           </button>
         ))}
       </div>
-      
+
       <div className={`mt-3 text-xs ${mutedText} text-center`}>
         {["rectangle", "circle", "triangle", "line"].includes(activeTool) && (
           <p>Click and drag to create {activeTool}</p>
         )}
-        {activeTool === "text" && (
-          <p>Click on canvas to add text</p>
-        )}
-        {activeTool === "pen" && (
-          <p>Click and drag to draw freely</p>
-        )}
-        {activeTool === "eraser" && (
-          <p>Click and drag to erase</p>
-        )}
+        {activeTool === "text" && <p>Click on canvas to add text</p>}
+        {activeTool === "pen" && <p>Click and drag to draw freely</p>}
+        {activeTool === "eraser" && <p>Click and drag to erase</p>}
       </div>
     </div>
   );
