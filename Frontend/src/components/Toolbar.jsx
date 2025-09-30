@@ -17,7 +17,6 @@ export default function Toolbar({ canvas }) {
   const [activeTool, setActiveTool] = useState("select");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Update canvas background when theme changes
   useEffect(() => {
     if (!canvas) return;
 
@@ -34,7 +33,6 @@ export default function Toolbar({ canvas }) {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Close sidebar when clicking on a tool (mobile)
   const handleToolSelect = (tool) => {
     setActiveTool(tool);
     if (window.innerWidth < 768) {
@@ -42,7 +40,6 @@ export default function Toolbar({ canvas }) {
     }
   };
 
-  // Theme classes
   const bgColor = isDarkTheme ? 'bg-gray-800' : 'bg-white';
   const textColor = isDarkTheme ? 'text-white' : 'text-gray-900';
   const borderColor = isDarkTheme ? 'border-gray-700' : 'border-gray-300';
@@ -77,9 +74,6 @@ export default function Toolbar({ canvas }) {
               {isDarkTheme ? '☀️' : '🌙'}
             </button>
           </div>
-        </div>
-        <div className={`mt-2 text-xs ${mutedText} text-center`}>
-          Active Tool: <span className="font-bold text-blue-400">{activeTool}</span>
         </div>
       </div>
 
@@ -130,7 +124,6 @@ export default function Toolbar({ canvas }) {
           <p className={`text-sm ${mutedText}`}>Create something amazing</p>
         </div>
 
-        {/* All self-contained components */}
         <TemplateSelector canvas={canvas} isDarkTheme={isDarkTheme} />
         
         <ToolSelector 
@@ -144,7 +137,6 @@ export default function Toolbar({ canvas }) {
         <TransformControls canvas={canvas} isDarkTheme={isDarkTheme} />
         <ShadowControls canvas={canvas} activeTool={activeTool} isDarkTheme={isDarkTheme} />
         
-        {/* Conditional components */}
         {(activeTool === "rectangle" || activeTool === "circle" || activeTool === "triangle") && (
           <GradientControls canvas={canvas} activeTool={activeTool} isDarkTheme={isDarkTheme} />
         )}

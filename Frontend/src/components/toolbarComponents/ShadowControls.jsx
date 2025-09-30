@@ -37,7 +37,7 @@ const ShadowControls = ({ canvas, isDarkTheme }) => {
     };
   }, [canvas]);
 
-  // Component has its OWN handlers
+ 
   const handleShadowToggle = (enabled) => {
     setShadowEnabled(enabled);
     

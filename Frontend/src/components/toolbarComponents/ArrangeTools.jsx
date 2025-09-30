@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ArrangeTools = ({ canvas, isDarkTheme }) => {
-  // Component has its OWN handlers
+ 
   const bringToFront = () => {
     const obj = canvas?.getActiveObject();
     if (obj) { 

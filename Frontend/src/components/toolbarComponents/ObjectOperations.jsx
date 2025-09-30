@@ -1,7 +1,7 @@
 // import { fabric } from 'fabric';
 
 const ObjectOperations = ({ canvas, isDarkTheme }) => {
-  // Component has its OWN handlers
+ 
   const duplicateObject = () => {
     const obj = canvas?.getActiveObject();
     if (!obj) return;

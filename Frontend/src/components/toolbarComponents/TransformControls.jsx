@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
 const TransformControls = ({ canvas, isDarkTheme }) => {
-  // Component manages its OWN state
   const [rotation, setRotation] = useState(0);
   const [flipHorizontal, setFlipHorizontal] = useState(false);
   const [flipVertical, setFlipVertical] = useState(false);
 
-  // Sync with selected object
   useEffect(() => {
     if (!canvas) return;
 
@@ -20,7 +18,6 @@ const TransformControls = ({ canvas, isDarkTheme }) => {
     };
 
     const handleSelectionCleared = () => {
-      // Reset or keep values? Let's keep them for UX
     };
 
     canvas.on("selection:created", updateFromObject);
@@ -34,14 +31,19 @@ const TransformControls = ({ canvas, isDarkTheme }) => {
     };
   }, [canvas]);
 
-  // Component has its OWN handlers
   const handleRotationChange = (angle) => {
     const newRotation = parseInt(angle);
     setRotation(newRotation);
     
     const obj = canvas?.getActiveObject();
     if (obj) {
-      obj.set('angle', newRotation);
+      obj.set({
+        'angle': newRotation,
+        'originX': 'center', 
+        'originY': 'center'  
+      });
+      
+      obj.setCoords();
       canvas.renderAll();
     }
   };
@@ -52,7 +54,12 @@ const TransformControls = ({ canvas, isDarkTheme }) => {
     
     const obj = canvas?.getActiveObject();
     if (obj) {
-      obj.set({ flipX: newFlip });
+      obj.set({ 
+        flipX: newFlip,
+        originX: 'center',
+        originY: 'center'
+      });
+      obj.setCoords();
       canvas.renderAll();
     }
   };
@@ -63,12 +70,17 @@ const TransformControls = ({ canvas, isDarkTheme }) => {
     
     const obj = canvas?.getActiveObject();
     if (obj) {
-      obj.set({ flipY: newFlip });
+      obj.set({ 
+        flipY: newFlip,
+        originX: 'center',
+        originY: 'center'
+      });
+      obj.setCoords();
       canvas.renderAll();
     }
   };
 
-  // Theme classes (unchanged)
+  // Theme classes
   const cardBg = isDarkTheme ? 'bg-gray-700' : 'bg-gray-100';
   const borderColor = isDarkTheme ? 'border-gray-700' : 'border-gray-300';
   const textColor = isDarkTheme ? 'text-white' : 'text-gray-900';

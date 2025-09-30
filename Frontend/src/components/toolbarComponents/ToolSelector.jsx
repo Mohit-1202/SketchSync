@@ -60,9 +60,10 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
         break;
       case "eraser":
         canvas.isDrawingMode = true;
-        canvas.freeDrawingBrush.width = 10;
-        // For eraser, use background color to "erase"
-        canvas.freeDrawingBrush.color = isDarkTheme ? "#0f172a" : "#ffffff";
+        canvas.freeDrawingBrush.width = 15;
+        // Use current canvas background color for proper erasing
+        const currentBgColor = canvas.backgroundColor || (isDarkTheme ? "#0f172a" : "#ffffff");
+        canvas.freeDrawingBrush.color = currentBgColor;
         canvas.defaultCursor = 'crosshair';
         break;
       case "rectangle":
@@ -223,33 +224,57 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
     currentShapeRef.current = null;
   };
 
-  // Text creation handler
-  const handleTextCreation = (opt) => {
-    if (opt.target) return;
+// With visual placeholder styling
+const handleTextCreation = (opt) => {
+  if (opt.target) return;
 
-    const pointer = canvas.getPointer(opt.e);
-    
-    const text = new fabric.IText("Click to type...", { 
-      left: pointer.x, 
-      top: pointer.y, 
-      fill: isDarkTheme ? "#ffffff" : "#000000", 
-      fontSize: 24, 
-      fontFamily: "Arial",
-      selectable: true
-    });
+  const pointer = canvas.getPointer(opt.e);
+  
+  const text = new fabric.IText("Type here...", { 
+    left: pointer.x, 
+    top: pointer.y, 
+    fill: isDarkTheme ? "#a0a0a0" : "#666666", // Lighter color for placeholder
+    fontSize: 24, 
+    fontFamily: "Arial",
+    selectable: true,
+    editable: true
+  });
 
-    canvas.add(text);
-    canvas.setActiveObject(text);
-    
-    // Switch back to select tool after creating text
-    setActiveTool("select");
-    
-    // Enter editing mode
-    setTimeout(() => {
-      text.enterEditing();
-      text.hiddenTextarea.focus();
-    }, 100);
-  };
+  let isPlaceholder = true;
+  
+  text.on('editing:entered', function() {
+    if (isPlaceholder) {
+      // Clear placeholder and change to normal text color
+      setTimeout(() => {
+        text.set({
+          text: '',
+          fill: isDarkTheme ? "#ffffff" : "#000000" // Normal text color
+        });
+        isPlaceholder = false;
+        canvas.renderAll();
+      }, 10);
+    }
+  });
+
+  text.on("editing:exited", () => {
+    // If text is empty, restore placeholder
+    if (!text.text || text.text.trim() === "") {
+      text.set({
+        text: 'Type here...',
+        fill: isDarkTheme ? "#a0a0a0" : "#666666" // Placeholder color
+      });
+      isPlaceholder = true;
+      canvas.renderAll();
+    }
+  });
+
+  canvas.add(text);
+  canvas.setActiveObject(text);
+  
+  setTimeout(() => {
+    text.enterEditing();
+  }, 50);
+};
 
   // Setup event listeners based on active tool
   const setupEventListeners = () => {

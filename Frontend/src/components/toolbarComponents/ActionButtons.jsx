@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ActionButtons = ({ canvas, isDarkTheme }) => {
-  // Component has its OWN handlers
+ 
   const shareCanvas = () => {
     navigator.clipboard.writeText(window.location.href);
     const notification = document.createElement('div');

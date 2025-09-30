@@ -46,7 +46,7 @@ const StyleControls = ({ canvas, activeTool, isDarkTheme }) => {
     };
   }, [canvas, isDarkTheme]);
 
-  // Component has its OWN handlers
+ 
   const handleOpacityChange = (value) => {
     const newOpacity = parseInt(value);
     setOpacity(newOpacity);

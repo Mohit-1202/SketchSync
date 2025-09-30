@@ -39,7 +39,7 @@ const GradientControls = ({ canvas, isDarkTheme }) => {
     };
   }, [canvas]);
 
-  // Component has its OWN handlers
+ 
   const handleGradientToggle = (enabled) => {
     setGradientEnabled(enabled);
     

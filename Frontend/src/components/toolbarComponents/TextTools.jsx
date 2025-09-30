@@ -31,7 +31,7 @@ const TextTools = ({ canvas, isDarkTheme }) => {
     };
   }, [canvas]);
 
-  // Component has its OWN handlers
+ 
   const handleFontFamilyChange = (family) => {
     setFontFamily(family);
     
