@@ -1,1 +1,21 @@
 @import "tailwindcss";
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+/* Prevent horizontal scroll globally */
+html, body, #root {
+  overflow-x: hidden;
+}
+
+/* Hide scrollbar but keep scrolling */
+::-webkit-scrollbar {
+  width: 0px;       /* for vertical scrollbar */
+  height: 0px;      /* for horizontal scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+* {
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* IE/Edge */
+}

@@ -1,15 +1,15 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+
 const firebaseConfig = {
-  apiKey: "AIzaSyAec7yF8ZaMYZfp77dw1ylqrR-3M2VOmb8",
-  authDomain: "skecthsync.firebaseapp.com",
-  projectId: "skecthsync",
-  storageBucket: "skecthsync.firebasestorage.app",
-  messagingSenderId: "388100601757",
-  appId: "1:388100601757:web:d7863d8dc6727d1fffa174",
-  measurementId: "G-D9MRH75MBG"
+  apiKey: import.meta.env.FIREBASE_API_KEY,
+  authDomain: import.meta.env.FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.FIREBASE_APP_ID,
+  measurementId: import.meta.env.FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app)
+export const db = getFirestore(app);
