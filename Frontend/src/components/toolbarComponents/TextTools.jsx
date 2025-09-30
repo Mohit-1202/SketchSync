@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 const TextTools = ({ canvas, isDarkTheme }) => {
-  // Component manages its OWN state
   const [fontFamily, setFontFamily] = useState("Arial");
   const [fontSize, setFontSize] = useState(24);
   
@@ -10,7 +9,6 @@ const TextTools = ({ canvas, isDarkTheme }) => {
     "Courier New", "Impact", "Comic Sans MS", "Trebuchet MS", "Arial Black"
   ];
 
-  // Sync with selected text object
   useEffect(() => {
     if (!canvas) return;
 
@@ -77,7 +75,6 @@ const TextTools = ({ canvas, isDarkTheme }) => {
     }
   };
 
-  // Theme classes
   const cardBg = isDarkTheme ? 'bg-gray-700' : 'bg-gray-100';
   const borderColor = isDarkTheme ? 'border-gray-700' : 'border-gray-300';
   const textColor = isDarkTheme ? 'text-white' : 'text-gray-900';

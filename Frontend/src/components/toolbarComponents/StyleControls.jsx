@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 const StyleControls = ({ canvas, activeTool, isDarkTheme }) => {
-  // Component manages its OWN state
   const [opacity, setOpacity] = useState(100);
   const [fillColor, setFillColor] = useState("transparent");
   const [strokeEnabled, setStrokeEnabled] = useState(true);
@@ -18,7 +17,6 @@ const StyleControls = ({ canvas, activeTool, isDarkTheme }) => {
     isDarkTheme ? "#000000" : "#ffffff"
   ];
 
-  // Sync with selected object
   useEffect(() => {
     if (!canvas) return;
 
@@ -120,7 +118,6 @@ const StyleControls = ({ canvas, activeTool, isDarkTheme }) => {
     }
   };
 
-  // Theme classes
   const cardBg = isDarkTheme ? 'bg-gray-700' : 'bg-gray-100';
   const borderColor = isDarkTheme ? 'border-gray-700' : 'border-gray-300';
   const textColor = isDarkTheme ? 'text-white' : 'text-gray-900';
@@ -134,7 +131,6 @@ const StyleControls = ({ canvas, activeTool, isDarkTheme }) => {
         Colors & Styles
       </h3>
       
-      {/* Opacity */}
       <div className="mb-4">
         <label className={`block text-sm font-medium mb-2 ${textColor}`}>Opacity: {opacity}%</label>
         <input 
@@ -147,7 +143,6 @@ const StyleControls = ({ canvas, activeTool, isDarkTheme }) => {
         />
       </div>
 
-      {/* Fill Color - Hide for line tool */}
       {activeTool !== "line" && (
         <div className="mb-4">
           <label className={`block text-sm font-medium mb-2 ${textColor}`}>
@@ -187,7 +182,6 @@ const StyleControls = ({ canvas, activeTool, isDarkTheme }) => {
         </div>
       )}
 
-      {/* Stroke Toggle and Settings */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
           <label className={`text-sm font-medium ${textColor}`}>
@@ -234,7 +228,6 @@ const StyleControls = ({ canvas, activeTool, isDarkTheme }) => {
         )}
       </div>
 
-      {/* Border Radius - Only show for rectangle tool */}
       {activeTool === "rectangle" && (
         <div className="mb-4">
           <label className={`block text-sm font-medium mb-2 ${textColor}`}>Border Radius: {borderRadius}px</label>

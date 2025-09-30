@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-case-declarations */
 import React, { useEffect, useRef } from 'react';
 import { fabric } from 'fabric';
@@ -14,12 +15,10 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
     { id: "eraser", icon: "🧽", label: "Eraser" }
   ];
 
-  // Refs for drag-to-create functionality
   const isDrawingRef = useRef(false);
   const startPointRef = useRef(null);
   const currentShapeRef = useRef(null);
 
-  // Apply tool settings whenever activeTool changes
   useEffect(() => {
     if (!canvas) return;
     applyToolSettings(activeTool);
@@ -29,13 +28,11 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
   const applyToolSettings = (toolName) => {
     if (!canvas) return;
 
-    // Reset canvas state
     canvas.isDrawingMode = false;
     canvas.selection = true;
     canvas.defaultCursor = 'default';
     canvas.skipTargetFind = false;
 
-    // Exit text editing if currently editing
     const activeObject = canvas.getActiveObject();
     if (activeObject && activeObject.isEditing) {
       activeObject.exitEditing();
@@ -196,7 +193,6 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
   const handleMouseUp = () => {
     if (!isDrawingRef.current || !currentShapeRef.current) return;
     
-    // Remove very small shapes (accidental clicks)
     const isTooSmall = 
       (activeTool === "rectangle" && (currentShapeRef.current.width < 5 || currentShapeRef.current.height < 5)) ||
       (activeTool === "circle" && currentShapeRef.current.radius < 5) ||
@@ -208,7 +204,6 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
     if (isTooSmall) {
       canvas.remove(currentShapeRef.current);
     } else {
-      // Make the shape selectable after creation
       currentShapeRef.current.set({ 
         selectable: true,
         evented: true
@@ -218,13 +213,11 @@ const ToolSelector = ({ canvas, isDarkTheme, activeTool, setActiveTool }) => {
     
     canvas.renderAll();
     
-    // Reset states
     isDrawingRef.current = false;
     startPointRef.current = null;
     currentShapeRef.current = null;
   };
 
-// With visual placeholder styling
 const handleTextCreation = (opt) => {
   if (opt.target) return;
 
@@ -233,7 +226,7 @@ const handleTextCreation = (opt) => {
   const text = new fabric.IText("Type here...", { 
     left: pointer.x, 
     top: pointer.y, 
-    fill: isDarkTheme ? "#a0a0a0" : "#666666", // Lighter color for placeholder
+    fill: isDarkTheme ? "#a0a0a0" : "#666666", 
     fontSize: 24, 
     fontFamily: "Arial",
     selectable: true,
@@ -244,11 +237,10 @@ const handleTextCreation = (opt) => {
   
   text.on('editing:entered', function() {
     if (isPlaceholder) {
-      // Clear placeholder and change to normal text color
       setTimeout(() => {
         text.set({
           text: '',
-          fill: isDarkTheme ? "#ffffff" : "#000000" // Normal text color
+          fill: isDarkTheme ? "#ffffff" : "#000000"
         });
         isPlaceholder = false;
         canvas.renderAll();
@@ -257,11 +249,10 @@ const handleTextCreation = (opt) => {
   });
 
   text.on("editing:exited", () => {
-    // If text is empty, restore placeholder
     if (!text.text || text.text.trim() === "") {
       text.set({
         text: 'Type here...',
-        fill: isDarkTheme ? "#a0a0a0" : "#666666" // Placeholder color
+        fill: isDarkTheme ? "#a0a0a0" : "#666666"
       });
       isPlaceholder = true;
       canvas.renderAll();
@@ -276,23 +267,19 @@ const handleTextCreation = (opt) => {
   }, 50);
 };
 
-  // Setup event listeners based on active tool
   const setupEventListeners = () => {
     if (!canvas) return;
 
-    // Remove all existing event listeners first
     canvas.off("mouse:down");
     canvas.off("mouse:move");
     canvas.off("mouse:up");
 
-    // Add event listeners for shape tools (drag-to-create)
     if (["rectangle", "circle", "triangle", "line"].includes(activeTool)) {
       canvas.on("mouse:down", handleMouseDown);
       canvas.on("mouse:move", handleMouseMove);
       canvas.on("mouse:up", handleMouseUp);
     }
 
-    // Add event listener for text tool (single click)
     if (activeTool === "text") {
       canvas.on("mouse:down", handleTextCreation);
     }
@@ -304,7 +291,6 @@ const handleTextCreation = (opt) => {
       return;
     }
 
-    // Toggle behavior for pen and eraser
     if ((toolId === "pen" && activeTool === "pen") || 
         (toolId === "eraser" && activeTool === "eraser")) {
       setActiveTool("select");
@@ -313,7 +299,6 @@ const handleTextCreation = (opt) => {
     }
   };
 
-  // Theme classes
   const cardBg = isDarkTheme ? 'bg-gray-700' : 'bg-gray-100';
   const borderColor = isDarkTheme ? 'border-gray-700' : 'border-gray-300';
   const textColor = isDarkTheme ? 'text-white' : 'text-gray-900';
@@ -348,7 +333,6 @@ const handleTextCreation = (opt) => {
         ))}
       </div>
       
-      {/* Instructions */}
       <div className={`mt-3 text-xs ${mutedText} text-center`}>
         {["rectangle", "circle", "triangle", "line"].includes(activeTool) && (
           <p>Click and drag to create {activeTool}</p>

@@ -10,9 +10,8 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
   const fabricCanvas = useRef(null);
   const [objectCount, setObjectCount] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const [saveStatus, setSaveStatus] = useState("idle"); // idle, saving, saved, error
+  const [saveStatus, setSaveStatus] = useState("idle"); 
 
-  // --- Mobile detection ---
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -20,7 +19,6 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // --- Save function (stable) ---
   const saveCanvasData = useCallback(async () => {
     if (!fabricCanvas.current || !sceneId) return;
 
@@ -36,10 +34,8 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
     }
   }, [sceneId]);
 
-  // debounced save (1000ms)
   const debouncedSave = useDebounce(saveCanvasData, 1000);
 
-  // Helper: promisified loadFromJSON so we can await it
   const loadFromJSONAsync = (canvas, json) => {
     return new Promise((resolve, reject) => {
       try {
@@ -57,7 +53,6 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
     });
   };
 
-  // --- Init canvas ---
   useEffect(() => {
     const canvasWidth = isMobile ? window.innerWidth : window.innerWidth - 320;
     const canvasHeight = isMobile ? window.innerHeight - 80 : window.innerHeight;
@@ -72,7 +67,6 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
       selectionLineWidth: 2,
     });
 
-    // brush setup
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
     canvas.freeDrawingBrush.width = 2;
     canvas.freeDrawingBrush.color = "#00aaff";
@@ -82,7 +76,6 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
 
     canvas.manualSave = saveCanvasData;
 
-    // event handlers
     const onObjectAdded = () => {
       setObjectCount(canvas.getObjects().length);
       debouncedSave();
@@ -99,7 +92,6 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
     canvas.on("object:modified", onObjectModified);
     canvas.on("object:removed", onObjectRemoved);
 
-    // initialize: load saved canvas if present
     (async () => {
       try {
         const data = await loadCanvas(sceneId);
@@ -114,7 +106,6 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
       }
     })();
 
-    // handle resize
     const handleResize = () => {
       if (!fabricCanvas.current) return;
       const w = isMobile ? window.innerWidth : window.innerWidth - 320;
@@ -123,7 +114,6 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
       fabricCanvas.current.renderAll();
     };
 
-    // keyboard delete
     const handleKeyDown = (e) => {
       if (!fabricCanvas.current) return;
       const active = fabricCanvas.current.getActiveObjects && fabricCanvas.current.getActiveObjects();
@@ -140,7 +130,6 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
     window.addEventListener("resize", handleResize);
     window.addEventListener("keydown", handleKeyDown);
 
-    // cleanup
     return () => {
       canvas.off("object:added", onObjectAdded);
       canvas.off("object:modified", onObjectModified);
@@ -156,7 +145,6 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
     };
   }, [sceneId, setCanvasInstance, isMobile, saveCanvasData, debouncedSave]);
 
-  // UI helpers
   const getStatusColor = () => {
     switch (saveStatus) {
       case "saving":
@@ -185,7 +173,6 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
 
   return (
     <div className="relative w-full h-full bg-gradient-to-br from-slate-900 via-purple-900 to-blue-900 overflow-hidden">
-      {/* Status Indicator + Manual Save */}
       <div className="absolute top-4 right-4 bg-gray-800/70 text-white px-3 py-1 rounded-lg z-20 backdrop-blur-sm flex items-center gap-2">
         <div className={`w-2 h-2 rounded-full ${getStatusColor()}`} />
         <span className="text-sm">{getStatusText()}</span>
@@ -197,7 +184,6 @@ export default function CanvasEditor({ sceneId, setCanvasInstance }) {
         </button>
       </div>
 
-      {/* Object Count */}
       <div
         className={`absolute ${
           isMobile ? "bottom-16 left-4" : "bottom-4 left-4"

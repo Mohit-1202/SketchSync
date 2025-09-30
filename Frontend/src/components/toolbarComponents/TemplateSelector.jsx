@@ -2,7 +2,6 @@
 import { useState } from 'react';
 
 const TemplateSelector = ({ canvas, isDarkTheme }) => {
-  // Component manages its OWN state
   const [currentTemplate, setCurrentTemplate] = useState("default");
 
   const designTemplates = [
@@ -13,7 +12,6 @@ const TemplateSelector = ({ canvas, isDarkTheme }) => {
     { id: "minimal", name: "Minimal", color: "#64748B" }
   ];
 
-  // Component has its OWN template logic
   const applyTemplate = (templateId) => {
     setCurrentTemplate(templateId);
     
@@ -68,12 +66,10 @@ const TemplateSelector = ({ canvas, isDarkTheme }) => {
     const template = templates[templateId] || templates.default;
 
     try {
-      // Apply template styles to selected object
       if (template.opacity !== undefined) {
         obj.set({ opacity: template.opacity / 100 });
       }
 
-      // Apply shadow
       if (template.shadowEnabled !== undefined) {
         if (template.shadowEnabled) {
           const shadow = new fabric.Shadow({
@@ -88,7 +84,6 @@ const TemplateSelector = ({ canvas, isDarkTheme }) => {
         }
       }
 
-      // Apply stroke
       if (template.strokeEnabled !== undefined) {
         if (template.strokeEnabled) {
           obj.set({
@@ -100,13 +95,11 @@ const TemplateSelector = ({ canvas, isDarkTheme }) => {
         }
       }
 
-      // Apply fill or gradient (not for lines)
       if (obj.type !== "line") {
         if (template.fillColor !== undefined) {
           obj.set({ fill: template.fillColor === "transparent" ? '' : template.fillColor });
         }
 
-        // Handle gradient
         if (template.gradientEnabled && obj.type !== "text") {
           let gradient;
           if (template.gradientType === "linear") {
@@ -139,7 +132,6 @@ const TemplateSelector = ({ canvas, isDarkTheme }) => {
         }
       }
 
-      // Apply border radius to rectangles
       if (obj.type === "rect" && template.borderRadius !== undefined) {
         obj.set({ rx: template.borderRadius, ry: template.borderRadius });
       }
@@ -150,7 +142,6 @@ const TemplateSelector = ({ canvas, isDarkTheme }) => {
     }
   };
 
-  // Theme classes
   const cardBg = isDarkTheme ? 'bg-gray-700' : 'bg-gray-100';
   const borderColor = isDarkTheme ? 'border-gray-700' : 'border-gray-300';
   const textColor = isDarkTheme ? 'text-white' : 'text-gray-900';

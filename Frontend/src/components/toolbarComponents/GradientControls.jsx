@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { fabric } from 'fabric';
 
 const GradientControls = ({ canvas, isDarkTheme }) => {
-  // Component manages its OWN state
   const [gradientEnabled, setGradientEnabled] = useState(false);
   const [gradientType, setGradientType] = useState("linear");
   const [gradientColor1, setGradientColor1] = useState("#666666");
@@ -13,7 +12,6 @@ const GradientControls = ({ canvas, isDarkTheme }) => {
     { value: "radial", label: "Radial" }
   ];
 
-  // Sync with selected object
   useEffect(() => {
     if (!canvas) return;
 
@@ -49,7 +47,6 @@ const GradientControls = ({ canvas, isDarkTheme }) => {
     if (enabled) {
       applyGradient();
     } else {
-      // Revert to solid fill (you might want to store the original fill color)
       obj.set({ fill: "#666666" });
       canvas.renderAll();
     }
@@ -122,7 +119,6 @@ const GradientControls = ({ canvas, isDarkTheme }) => {
     }
   };
 
-  // Theme classes
   const cardBg = isDarkTheme ? 'bg-gray-700' : 'bg-gray-100';
   const borderColor = isDarkTheme ? 'border-gray-700' : 'border-gray-300';
   const textColor = isDarkTheme ? 'text-white' : 'text-gray-900';

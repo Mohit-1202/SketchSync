@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { fabric } from 'fabric';
 
 const ShadowControls = ({ canvas, isDarkTheme }) => {
-  // Component manages its OWN state
   const [shadowEnabled, setShadowEnabled] = useState(false);
   const [shadowColor, setShadowColor] = useState("#000000");
   const [shadowBlur, setShadowBlur] = useState(10);
   const [shadowOffsetX, setShadowOffsetX] = useState(5);
   const [shadowOffsetY, setShadowOffsetY] = useState(5);
 
-  // Sync with selected object
   useEffect(() => {
     if (!canvas) return;
 
@@ -144,7 +142,6 @@ const ShadowControls = ({ canvas, isDarkTheme }) => {
     }
   };
 
-  // Theme classes
   const cardBg = isDarkTheme ? 'bg-gray-700' : 'bg-gray-100';
   const borderColor = isDarkTheme ? 'border-gray-700' : 'border-gray-300';
   const textColor = isDarkTheme ? 'text-white' : 'text-gray-900';

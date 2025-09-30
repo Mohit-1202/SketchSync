@@ -17,52 +17,7 @@ const ObjectOperations = ({ canvas, isDarkTheme }) => {
     });
   };
 
-//   const groupObjects = () => {
-//     if (!canvas) return;
-    
-//     const objects = canvas.getActiveObjects();
-//     if (!objects || objects.length < 2) {
-//       alert("Please select at least 2 objects to group (hold Shift or Ctrl and click to select multiple)");
-//       return;
-//     }
 
-//     const group = new fabric.Group(objects, {
-//       left: objects[0].left,
-//       top: objects[0].top
-//     });
-    
-//     canvas.discardActiveObject();
-//     canvas.add(group);
-//     canvas.setActiveObject(group);
-//     canvas.renderAll();
-//   };
-
-//   const ungroupObjects = () => {
-//     const obj = canvas?.getActiveObject();
-//     if (!obj || obj.type !== 'group') {
-//       alert("Please select a group to ungroup");
-//       return;
-//     }
-
-//     const groupLeft = obj.left;
-//     const groupTop = obj.top;
-
-//     const objects = obj.getObjects();
-    
-//     canvas.remove(obj);
-    
-//     objects.forEach(object => {
-//       object.set({
-//         left: groupLeft + object.left,
-//         top: groupTop + object.top,
-//         selectable: true
-//       });
-//       canvas.add(object);
-//     });
-
-//     canvas.discardActiveObject();
-//     canvas.renderAll();
-//   };
 
   const deleteObject = () => {
     if (!canvas) return;
@@ -72,7 +27,6 @@ const ObjectOperations = ({ canvas, isDarkTheme }) => {
     canvas.renderAll();
   };
 
-  // Theme classes
   const cardBg = isDarkTheme ? 'bg-gray-700' : 'bg-gray-100';
   const borderColor = isDarkTheme ? 'border-gray-700' : 'border-gray-300';
   const textColor = isDarkTheme ? 'text-white' : 'text-gray-900';
@@ -92,20 +46,6 @@ const ObjectOperations = ({ canvas, isDarkTheme }) => {
           <span>📋</span>
           <span>Duplicate</span>
         </button>
-        {/* <button 
-          onClick={groupObjects}
-          className={`${cardBg} border ${borderColor} ${hoverBg} p-2 rounded-lg transition-all text-sm font-medium ${textColor} flex items-center justify-center space-x-1`}
-        >
-          <span>👥</span>
-          <span>Group</span>
-        </button> */}
-        {/* <button 
-          onClick={ungroupObjects}
-          className={`${cardBg} border ${borderColor} ${hoverBg} p-2 rounded-lg transition-all text-sm font-medium ${textColor} flex items-center justify-center space-x-1`}
-        >
-          <span>👤</span>
-          <span>Ungroup</span>
-        </button> */}
         <button 
           onClick={deleteObject}
           className={`${cardBg} border border-red-600 ${isDarkTheme ? 'hover:bg-red-900' : 'hover:bg-red-100'} p-2 rounded-lg transition-all text-sm font-medium text-red-400 flex items-center justify-center space-x-1`}
