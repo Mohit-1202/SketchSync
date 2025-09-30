@@ -54,10 +54,3 @@ While building this project, the following decisions were made:
   Optimized for both desktop and mobile devices.
 
 ---
-
-## 📦 Installation & Setup
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/Mohit-1202/sketchsync.git
-cd sketchsync
